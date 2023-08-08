@@ -1,0 +1,17 @@
+<.flash_group flash={@flash} />
+<div id="menu" class="absolute z-10 pointer-events-none">
+  <div class="p-4 flex flex-col space-y-4">
+    <div data-type="tree:alder" class="item pointer-events-auto">
+      <div class="rounded-full w-4 h-4 p-4 border border-gray-400 bg-orange-400 hover:bg-orange-500"></div>
+      alder
+    </div>
+    <div data-type="tree:oak" class="item pointer-events-auto">
+      <div class="rounded-full w-4 h-4 p-4 border border-gray-400 bg-violet-400 hover:bg-violet-500"></div>
+      oak
+    </div>
+    <div class="pointer-events-auto">
+      <button id="sound" class="block p-2 rounded-md bg-red-100 hover:bg-red-200">sound</button>
+    </div>
+  </div>
+</div>
+<div id="canvas" class="absolute z-0 bg-green-50 overflow-hidden"></div>

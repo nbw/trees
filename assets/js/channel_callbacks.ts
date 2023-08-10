@@ -19,7 +19,6 @@ export const setup = () => {
     createTree(tree);
 
     // find the tree that was created temporarily and destroy it
-    const t = STAGE.find('#temp')[0];
-    t.destroy();
+    STAGE.find('#temp').forEach((t) => t.destroy());
   });
 };

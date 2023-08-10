@@ -24,7 +24,8 @@ defmodule Trees.Forest do
   def search_trees(%Tree.Search{x1: x1, x2: x2, y1: y1, y2: y2}) do
     from(t in Tree,
       where: t.x >= ^x1 and t.x < ^x2,
-      where: t.y >= ^y1 and t.y < ^y2
+      where: t.y >= ^y1 and t.y < ^y2,
+      order_by: [asc: t.y]
     )
     |> Repo.all()
   end

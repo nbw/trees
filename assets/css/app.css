@@ -3,3 +3,21 @@
 @import "tailwindcss/utilities";
 
 /* This file is for your main application CSS */
+
+.custom-bg {
+  /* background-image: url('https://as1.ftcdn.net/v2/jpg/04/43/69/32/1000_F_443693248_FFOUon01HIYUVLVPFIyhrzDlbmWN8XKq.jpg'); */
+  background-image: url('/images/bg2.png');
+  background-repeat: repeat;
+}
+@keyframes waves {
+  0%   {background-position-x: 0px;}
+  49%  {background-position-x: 0px;}
+  50%  {background-position-x: 5px;}
+  100% {background-position-x: 5px;}
+}
+.animate-bg {
+  animation-name: waves;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate-reverse;
+}

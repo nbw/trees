@@ -2,14 +2,14 @@ import Konva from "../vendor/konva.min.js";
 import {
   CANVAS,
   CHANNEL,
-  LAYER,
-  POSITION,
+  LAYER, POSITION,
   SELECTED_TREE,
   STAGE,
   TREES,
 } from "./state.js";
 import {
-  CH
+  CH,
+  SOUND
 } from "./constants.js";
 import { makeNoise } from "./noise.js";
 import {Tree, build_tree_lookup} from "./tree.js";
@@ -77,12 +77,34 @@ export const go = () => {
     const x = (mousePos.x - absolute.x)
     const y = (mousePos.y - absolute.y)
 
-    LAYER.add(newTree(new Tree("temp", SELECTED_TREE, x, y)));
+    const t = newTree(new Tree("temp", SELECTED_TREE, x, y))
+    drawNodesInOrder(t)
 
     if (CHANNEL) {
       CHANNEL?.push(CH.TREE_NEW, {x: x, y: y, type: SELECTED_TREE});
     }
   });
+
+  const triangle = "https://static.vecteezy.com/system/resources/previews/001/200/602/original/triangle-png.png"
+
+  var imageObj = new Image();
+  imageObj.src = triangle;
+  imageObj.onload = function() {
+    var image = new Konva.Image({
+      x: 200,
+      y: 50,
+      image: imageObj,
+      width: 100,
+      height: 100
+    });
+    image.on('mouseover', function () {
+      console.log("mouse over tri")
+    });
+    image.on('mouseout', function () {
+      console.log("mouse not over tri")
+    });
+    LAYER.add(image);
+  };
 
   start();
 }
@@ -104,7 +126,7 @@ const fetchTrees = async (x1, y1, x2, y2) => {
 const start = async () => {
   const trees = await fetchTrees(-50, -50, canvasWidth()+50, canvasHeight()+50);
   trees.forEach(function (tree) {
-    createTree(tree);
+    createTree(tree, true);
   });
 }
 
@@ -119,8 +141,7 @@ const positionChanged = () : boolean => {
   }
 }
 
-
-export const createTree = (tree_data) => {
+export const createTree = (tree_data, skipDrawInOrder = false) => {
   if (TREES[tree_data.id] === undefined) {
     const tree = new Tree(
         tree_data.id,
@@ -131,7 +152,12 @@ export const createTree = (tree_data) => {
 
     TREES[tree.id] = tree;
 
-    LAYER.add(newTree(tree));
+    if (skipDrawInOrder) {
+      LAYER.add(newTree(tree));
+    } else {
+      drawNodesInOrder(newTree(tree));
+    }
+
   }
 }
 
@@ -161,9 +187,9 @@ export const newTree = (tree: Tree) => {
 
 setInterval(() => {
   treesOnScreen().forEach(function (node) {
-    if (Math.random() > 0.80) {
+    if (Math.random() > SOUND.NOISE_PROBABILITY) {
       setTimeout(() => {
-        animateTree(node);
+        if (node) { animateTree(node); }
        },
         Math.floor(Math.random() * 2499)
       );
@@ -173,26 +199,59 @@ setInterval(() => {
 
 
 const treesOnScreen = () => {
+  const stageAbsolute = STAGE.absolutePosition();
+
   return LAYER.getChildren(function(node){
-    const stageAbsolute = STAGE.absolutePosition();
-    const nodeAbsolute = node.position();
+    const nodePosition = node.position();
 
     return node.id()
            && node.getClassName() === 'Group'
-           && (-1*stageAbsolute.x < nodeAbsolute.x)
-           && (-1*stageAbsolute.x + canvasWidth() > nodeAbsolute.x)
-           && (-1*stageAbsolute.y < nodeAbsolute.y)
-           && (-1*stageAbsolute.y + canvasHeight() > nodeAbsolute.y)
+           && (-1*stageAbsolute.x < nodePosition.x)
+           && (-1*stageAbsolute.x + canvasWidth() > nodePosition.x)
+           && (-1*stageAbsolute.y < nodePosition.y)
+           && (-1*stageAbsolute.y + canvasHeight() > nodePosition.y)
   });
 }
 
+const collidingNodes = (refNode) => {
+  return LAYER.getChildren(function (node) {
+    return refNode.id() !== "temp"
+           && (refNode.id() != node.id())
+           && haveIntersection(refNode.getClientRect(), node.getClientRect());
+  });
+}
+
+const haveIntersection = (r1, r2) => {
+    return !(
+      r2.x > r1.x + r1.width ||
+      r2.x + r2.width < r1.x ||
+      r2.y > r1.y + r1.height ||
+      r2.y + r2.height < r1.y
+    );
+  }
+
 const animateTree = (node) => {
-  const images = node.getChildren();
-    images[0].hide();
-    images[1].show();
-    makeNoise(0.4);
-  setTimeout(() => {
-    images[0].show();
-    images[1].hide();
-  }, 350)
+  if (node) {
+    const images = node.getChildren();
+      images[0].hide();
+      images[1].show();
+      makeNoise(SOUND.BG_VOLUME);
+    setTimeout(() => {
+      images[0].show();
+      images[1].hide();
+    }, 350);
+  }
+}
+
+const drawNodesInOrder = (newNode) => {
+  const nodes = collidingNodes(newNode);
+  const clones = nodes.map((n) => {
+    if (n !== undefined && n.id() !== "temp") {
+      return newTree(TREES[n.id()]);
+    }
+  }).filter((n) => n !== undefined);
+  nodes.forEach((n) => n.destroy());
+  clones.push(newNode);
+  clones.sort((a, b) => a.y() - b.y())
+  clones.forEach((n) => LAYER.add(n));
 }

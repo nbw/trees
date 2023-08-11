@@ -7,6 +7,7 @@ defmodule Trees.Application do
 
   @impl true
   def start(_type, _args) do
+    Trees.Release.migrate()
     topologies = Application.get_env(:libcluster, :topologies) || []
 
     children = [

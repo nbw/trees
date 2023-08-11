@@ -7,6 +7,8 @@ defmodule Trees.Application do
 
   @impl true
   def start(_type, _args) do
+    topologies = Application.get_env(:libcluster, :topologies) || []
+
     children = [
       # Start the Telemetry supervisor
       TreesWeb.Telemetry,
@@ -16,10 +18,16 @@ defmodule Trees.Application do
       {Phoenix.PubSub, name: Trees.PubSub},
       # Start Finch
       {Finch, name: Trees.Finch},
-      # Start the Endpoint (http/https)
-      TreesWeb.Endpoint
+      # Start the Endpoint (http/httpsv
+      TreesWeb.Endpoint,
       # Start a worker by calling: Trees.Worker.start_link(arg)
       # {Trees.Worker, arg}
+      # Start litefs genserver and pass the local repo configuration
+      # {Litefs, Application.get_env(:trees, Trees.Repo.Local)},
+      # Start the Ecto repository
+      # Trees.Repo.Local,
+      # setup libcluster
+      {Cluster.Supervisor, [topologies, [name: Trees.ClusterSupervisor]]},
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

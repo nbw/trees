@@ -7,6 +7,12 @@ config :trees, Trees.Repo,
   stacktrace: true,
   show_sensitive_data_on_connection_error: true
 
+# config :trees, Trees.Repo.Local,
+#   database: "/mnt/litefs1/test.db",
+#   journal_mode: :delete,
+#   pool_size: 5,
+#   stacktrace: true
+
 # For development, we disable any cache and enable
 # debugging and code reloading.
 #
@@ -16,7 +22,7 @@ config :trees, Trees.Repo,
 config :trees, TreesWeb.Endpoint,
   # Binding to loopback ipv4 address prevents access from other machines.
   # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
-  http: [ip: {127, 0, 0, 1}, port: 3000],
+  http: [ip: {127, 0, 0, 1}, port: System.get_env("PORT") || 3000],
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
@@ -74,3 +80,15 @@ config :phoenix, :plug_init_mode, :runtime
 
 # Disable swoosh api client as it is only required for production adapters.
 config :swoosh, :api_client, false
+
+# config :libcluster,
+#   topologies: [
+#     local_epmd_example: [
+#       strategy: Elixir.Cluster.Strategy.LocalEpmd]]
+
+config :libcluster,
+  topologies: [
+    local_cluster: [
+      strategy: Cluster.Strategy.Gossip
+    ]
+  ]

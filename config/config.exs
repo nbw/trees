@@ -20,6 +20,9 @@ config :trees, TreesWeb.Endpoint,
   pubsub_server: Trees.PubSub,
   live_view: [signing_salt: "UeXe/J5I"]
 
+# config :trees, Tree.Repo.Local,
+#   priv: "priv/repo"
+
 # Configures the mailer
 #
 # By default it uses the "Local" adapter which stores the emails

@@ -1,0 +1,43 @@
+version: '3'
+services:
+  nginx:
+    build:
+      context: ./dev-config/nginx
+    ports:
+      - "8080:80"
+  primary:
+    build:
+      dockerfile: ./Dockerfile.dev
+      context: .
+    ports:
+    - "7000:7000"
+    privileged: true
+    environment:
+      CHECK_ORIGIN: "false"
+      CLUSTER_STRATEGY: "gossip"
+      DATABASE_PATH: "/litefs/trees.db"
+      FLY_APP_NAME: "trees"
+      FLY_REGION: primary
+      ERLANG_COOKIE: "its_a_secret"
+      LOCAL: "true"
+      IS_PRIMARY: "true"
+      PORT: 7000
+      SECRET_KEY_BASE: v+HjUnqoGKoG7VLAh9mzKlW/Nr/eli93Pk3PI0yG6YSrhOjTIniR8KvbiXQ7Fj6l
+  replica:
+    build:
+      dockerfile: ./Dockerfile.dev
+      context: .
+    ports:
+    - "7001:7001"
+    privileged: true
+    environment:
+      CHECK_ORIGIN: "false"
+      CLUSTER_STRATEGY: "gossip"
+      DATABASE_PATH: "/litefs/trees.db"
+      FLY_APP_NAME: "trees"
+      FLY_REGION: secondary
+      ERLANG_COOKIE: "its_a_secret"
+      LOCAL: "true"
+      IS_PRIMARY: "false"
+      PORT: 7001
+      SECRET_KEY_BASE: v+HjUnqoGKoG7VLAh9mzKlW/Nr/eli93Pk3PI0yG6YSrhOjTIniR8KvbiXQ7Fj6l

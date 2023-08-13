@@ -8,7 +8,7 @@
 import Config
 
 config :trees,
-  ecto_repos: [Trees.Repo]
+  ecto_repos: [Trees.Repo.Local]
 
 # Configures the endpoint
 config :trees, TreesWeb.Endpoint,
@@ -19,6 +19,9 @@ config :trees, TreesWeb.Endpoint,
   ],
   pubsub_server: Trees.PubSub,
   live_view: [signing_salt: "UeXe/J5I"]
+
+config :trees, Trees.Repo.Local,
+    priv: "priv/repo"
 
 # config :trees, Tree.Repo.Local,
 #   priv: "priv/repo"

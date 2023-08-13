@@ -11,10 +11,16 @@ defmodule Trees.Application do
     topologies = Application.get_env(:libcluster, :topologies) || []
 
     children = [
+      # Start the Ecto repository
+      Trees.Repo.Local,
+      # Start litefs genserver and pass the local repo configuration
+      {Litefs, Application.get_env(:trees, Trees.Repo.Local)},
+      # setup libcluster
+      {Cluster.Supervisor, [topologies, [name: Trees.ClusterSupervisor]]},
       # Start the Telemetry supervisor
       TreesWeb.Telemetry,
       # Start the Ecto repository
-      Trees.Repo,
+      # Trees.Repo,
       # Start the PubSub system
       {Phoenix.PubSub, name: Trees.PubSub},
       # Start Finch
@@ -23,12 +29,6 @@ defmodule Trees.Application do
       TreesWeb.Endpoint,
       # Start a worker by calling: Trees.Worker.start_link(arg)
       # {Trees.Worker, arg}
-      # Start litefs genserver and pass the local repo configuration
-      # {Litefs, Application.get_env(:trees, Trees.Repo.Local)},
-      # Start the Ecto repository
-      # Trees.Repo.Local,
-      # setup libcluster
-      {Cluster.Supervisor, [topologies, [name: Trees.ClusterSupervisor]]},
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

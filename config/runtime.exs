@@ -30,7 +30,7 @@ if config_env() == :prod do
       For example: /etc/trees/trees.db
       """
 
-  config :trees, Trees.Repo,
+  config :trees, Trees.Repo.Local,
     database: database_path,
     pool_size: String.to_integer(System.get_env("POOL_SIZE") || "5")
 
@@ -49,6 +49,13 @@ if config_env() == :prod do
   host = System.get_env("PHX_HOST") || "example.com"
   port = String.to_integer(System.get_env("PORT") || "4000")
 
+  # For running PROD locally in docker
+  check_origin = case System.get_env("CHECK_ORIGIN") do
+      "true" -> true
+      "false" -> false
+      _ -> true
+    end
+
   config :trees, TreesWeb.Endpoint,
     url: [host: host, port: 443, scheme: "https"],
     http: [
@@ -59,6 +66,7 @@ if config_env() == :prod do
       ip: {0, 0, 0, 0, 0, 0, 0, 0},
       port: port
     ],
+    check_origin: check_origin,
     secret_key_base: secret_key_base
 
   # ## SSL Support
@@ -110,20 +118,41 @@ if config_env() == :prod do
   #     config :swoosh, :api_client, Swoosh.ApiClient.Hackney
   #
   # See https://hexdocs.pm/swoosh/Swoosh.html#module-installation for details.
-  app_name =
-    System.get_env("FLY_APP_NAME") ||
-      raise "FLY_APP_NAME not available"
 
-  config :libcluster,
-    debug: true,
-    topologies: [
-      fly6pn: [
-        strategy: Cluster.Strategy.DNSPoll,
-        config: [
-          polling_interval: 5_000,
-          query: "#{app_name}.internal",
-          node_basename: app_name
+  # When running docker locally, we use gossip as a strategy
+
+  cluster_strategy = System.get_env("CLUSTER_STRATEGY")
+
+  case cluster_strategy do
+    "gossip" ->
+      config :libcluster,
+        topologies: [
+          local_cluster: [
+            strategy: Cluster.Strategy.Gossip
+          ]
         ]
-      ]
-    ]
+
+    "local" ->
+      config :libcluster,
+        topologies: [
+        local_epmd_example: [
+          strategy: Elixir.Cluster.Strategy.LocalEpmd]]
+    _ ->
+      app_name =
+        System.get_env("FLY_APP_NAME") ||
+          raise "FLY_APP_NAME not available"
+
+      config :libcluster,
+        debug: true,
+        topologies: [
+          fly6pn: [
+            strategy: Cluster.Strategy.DNSPoll,
+            config: [
+              polling_interval: 5_000,
+              query: "#{app_name}.internal",
+              node_basename: app_name
+            ]
+          ]
+        ]
+  end
 end

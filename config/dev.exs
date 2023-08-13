@@ -1,17 +1,11 @@
 import Config
 
 # Configure your database
-config :trees, Trees.Repo,
+config :trees, Trees.Repo.Local,
   database: Path.expand("../trees_dev.db", Path.dirname(__ENV__.file)),
   pool_size: 5,
   stacktrace: true,
   show_sensitive_data_on_connection_error: true
-
-# config :trees, Trees.Repo.Local,
-#   database: "/mnt/litefs1/test.db",
-#   journal_mode: :delete,
-#   pool_size: 5,
-#   stacktrace: true
 
 # For development, we disable any cache and enable
 # debugging and code reloading.

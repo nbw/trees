@@ -1,5 +1,9 @@
 # Trees
 
+## Usage
+
+### Development (normal way)
+
 To start your Phoenix server:
 
   * Run `mix setup` to install and setup dependencies
@@ -7,12 +11,21 @@ To start your Phoenix server:
 
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
+### Development (LiteFs way)
 
-## Learn more
+`docker compose up`
 
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
+Now you can visit:
+- [`localhost:7000`](http://localhost:7000) (primary)
+- [`localhost:7001`](http://localhost:7001) (replica)
+
+#### Debug Litefs db
+
+To see the contents of the db:
+
+1. `sudo docker ps`
+2. find container id
+3. `sudo docker exec –it <container id> /bin/bash`
+4. `sqlite3 /litefs/trees.db`
+
+

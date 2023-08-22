@@ -1,4 +1,4 @@
-defmodule TreesWeb.WorldLive do
+defmodule TreesWeb.ForestLive do
   use TreesWeb, :live_view
 
   @impl true

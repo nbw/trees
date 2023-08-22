@@ -4,27 +4,26 @@
 #
 
 app = "trees"
-primary_region = "nrt"
+primary_region = "sea"
 kill_signal = "SIGTERM"
+swap_size_mb = 512
 
 [deploy]
-#  release_command = "/app/bin/migrate"
 
 [env]
   PHX_HOST = "trees.fly.dev"
   PORT = "8080"
-  DATABASE_PATH = "/mnt/trees_db/trees_db.db"
+  DATABASE_PATH = "/litefs/db.db"
 
 [mounts]
-  source="trees_db"
-  destination="/mnt/trees_db"
+  source = "litefs"
+  destination = "/var/lib/litefs"
 
 [http_service]
   internal_port = 8080
   force_https = true
-  auto_stop_machines = true
-  auto_start_machines = true
   min_machines_running = 0
+  processes = ["app"]
   [http_service.concurrency]
     type = "connections"
     hard_limit = 1000

@@ -9,10 +9,10 @@
 #   - https://hub.docker.com/r/hexpm/elixir/tags - for the build image
 #   - https://hub.docker.com/_/debian?tab=tags&page=1&name=bullseye-20230612-slim - for the release image
 #   - https://pkgs.org/ - resource for finding needed packages
-#   - Ex: hexpm/elixir:1.14.5-erlang-26.0.1-debian-bullseye-20230612-slim
+#   - Ex: hexpm/elixir:1.15.0-erlang-26.0.2-debian-bullseye-20230612-slim
 #
-ARG ELIXIR_VERSION=1.14.5
-ARG OTP_VERSION=26.0.1
+ARG ELIXIR_VERSION=1.15.0
+ARG OTP_VERSION=26.0.2
 ARG DEBIAN_VERSION=bullseye-20230612-slim
 
 ARG BUILDER_IMAGE="hexpm/elixir:${ELIXIR_VERSION}-erlang-${OTP_VERSION}-debian-${DEBIAN_VERSION}"
@@ -51,6 +51,8 @@ COPY lib lib
 
 COPY assets assets
 
+COPY fly-config fly-config
+
 # compile assets
 RUN mix assets.deploy
 
@@ -86,13 +88,13 @@ RUN chown nobody /app
 # set runner ENV
 ENV MIX_ENV="prod"
 
+# Copy Litefs
+COPY --from=flyio/litefs:0.5 /usr/local/bin/litefs /usr/local/bin/litefs
+
 # Only copy the final release from the build stage
 COPY --from=builder --chown=nobody:root /app/_build/${MIX_ENV}/rel/trees ./
 
-USER nobody
+ADD fly-config/litefs.yml /tmp/litefs.yml
+RUN cp /tmp/litefs.yml /etc/litefs.yml
 
-CMD ["/app/bin/server"]
-
-# Appended by flyctl
-ENV ECTO_IPV6 true
-ENV ERL_AFLAGS "-proto_dist inet6_tcp"
+ENTRYPOINT litefs mount

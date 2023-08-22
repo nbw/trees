@@ -16,9 +16,7 @@ defmodule TreesWeb.Router do
 
   scope "/", TreesWeb do
     pipe_through :browser
-
-    get "/", PageController, :home
-    live "/world", WorldLive
+    live "/", ForestLive
   end
 
   # Other scopes may use custom stacks.

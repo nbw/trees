@@ -8,6 +8,7 @@ defmodule Trees.Application do
   @impl true
   def start(_type, _args) do
     Trees.Release.migrate()
+
     topologies = Application.get_env(:libcluster, :topologies) || []
 
     children = [
@@ -19,14 +20,13 @@ defmodule Trees.Application do
       {Cluster.Supervisor, [topologies, [name: Trees.ClusterSupervisor]]},
       # Start the Telemetry supervisor
       TreesWeb.Telemetry,
-      # Start the Ecto repository
-      # Trees.Repo,
       # Start the PubSub system
       {Phoenix.PubSub, name: Trees.PubSub},
       # Start Finch
       {Finch, name: Trees.Finch},
-      # Start the Endpoint (http/httpsv
+      # Presence (between pubsub and endpoint)
       TreesWeb.Presence,
+      # Start the Endpoint (http/httpsv
       TreesWeb.Endpoint,
       # Start a worker by calling: Trees.Worker.start_link(arg)
       # {Trees.Worker, arg}

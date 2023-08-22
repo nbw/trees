@@ -1,0 +1,1 @@
+This folder contains files for running litefs locally with docker.

@@ -9,12 +9,11 @@
 #   - https://hub.docker.com/r/hexpm/elixir/tags - for the build image
 #   - https://hub.docker.com/_/debian?tab=tags&page=1&name=bullseye-20230612-slim - for the release image
 #   - https://pkgs.org/ - resource for finding needed packages
-#   - Ex: hexpm/elixir:1.14.5-erlang-26.0.1-debian-bullseye-20230612-slim
+#   - Ex: hexpm/elixir:1.15.0-erlang-26.0.2-debian-bullseye-20230612-slim
 #
 ARG ELIXIR_VERSION=1.14.5
 ARG OTP_VERSION=26.0.1
 ARG DEBIAN_VERSION=bullseye-20230612-slim
-
 
 ARG BUILDER_IMAGE="hexpm/elixir:${ELIXIR_VERSION}-erlang-${OTP_VERSION}-debian-${DEBIAN_VERSION}"
 ARG RUNNER_IMAGE="debian:${DEBIAN_VERSION}"
@@ -52,7 +51,7 @@ COPY lib lib
 
 COPY assets assets
 
-COPY dev-config dev-config
+COPY docker-config docker-config
 
 # compile assets
 RUN mix assets.deploy
@@ -63,7 +62,9 @@ RUN mix compile
 # Changes to config/runtime.exs don't require recompiling the code
 COPY config/runtime.exs config/
 
-COPY rel rel
+# We don't want this when running locally
+# COPY rel rel
+
 RUN mix release
 
 # start a new build stage so that the final image will only contain
@@ -89,21 +90,13 @@ RUN chown nobody /app
 # set runner ENV
 ENV MIX_ENV="prod"
 
-# Copy litefs
+# Copy Litefs
 COPY --from=flyio/litefs:0.5 /usr/local/bin/litefs /usr/local/bin/litefs
 
 # Only copy the final release from the build stage
-COPY --from=builder --chown=nobody:root /app/_build/${MIX_ENV}/rel/trees ./
+COPY --from=builder --chown=nobody:root /app/_build/${MIX_ENV}/rel/fly ./
 
-ADD dev-config/etc/litefs.dev.yml /tmp/litefs.yml
+ADD docker-config/etc/litefs.yml /tmp/litefs.yml
 RUN cp /tmp/litefs.yml /etc/litefs.yml
 
-# USER nobody
-
 ENTRYPOINT litefs mount
-
-# CMD ["/app/bin/server"]
-
-# Appended by flyctl
-# ENV ECTO_IPV6 true
-# ENV ERL_AFLAGS "-proto_dist inet6_tcp"

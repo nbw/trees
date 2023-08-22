@@ -10,6 +10,9 @@ import Config
 config :trees,
   ecto_repos: [Trees.Repo.Local]
 
+config :trees, Trees.Repo.Local,
+  priv: "priv/repo"
+
 # Configures the endpoint
 config :trees, TreesWeb.Endpoint,
   url: [host: "localhost"],

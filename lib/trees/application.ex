@@ -26,6 +26,7 @@ defmodule Trees.Application do
       # Start Finch
       {Finch, name: Trees.Finch},
       # Start the Endpoint (http/httpsv
+      TreesWeb.Presence,
       TreesWeb.Endpoint,
       # Start a worker by calling: Trees.Worker.start_link(arg)
       # {Trees.Worker, arg}

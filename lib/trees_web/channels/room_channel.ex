@@ -17,4 +17,13 @@ defmodule TreeWeb.RoomChannel do
       {:noreply, socket}
     end
   end
+
+  def handle_in("tree:destroy", %{"id"=> id}, socket) do
+    with %Trees.Forest.Tree{} = tree <- Trees.Forest.get_tree!(id),
+      {:ok, _tree} <- Trees.Forest.delete_tree(tree)
+    do
+      broadcast!(socket, "tree:destroy", %{id: tree.id, type: tree.type, x: tree.x, y: tree.y})
+      {:noreply, socket}
+    end
+  end
 end

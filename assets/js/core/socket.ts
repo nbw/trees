@@ -13,6 +13,10 @@ export const setupChannel = (token: string, name: string) => {
   return socket.channel(name, {});
 };
 
+export const setupChannelFromSocket = (socket, name: string) => {
+  return socket.channel(name, {});
+};
+
 export const channelCallback = (
   channel,
   callback: string,

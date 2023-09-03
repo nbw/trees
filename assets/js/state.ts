@@ -10,7 +10,8 @@ export let MAIN_LAYER = new Konva.Layer();
 export let SECONDARY_LAYER = new Konva.Layer();
 export let BACKGROUND_LAYER = new Konva.Layer();
 export let FOREGROUND_LAYER = new Konva.Layer();
-export let ACTION = "oak";
+export let AUDIO = false;
+export let ACTION = "sakura";
 export let STAGE = new Konva.Stage({
     container: DOM.CANVAS_ID,
     width: window.innerWidth,
@@ -29,4 +30,8 @@ export const setupFromSocket = (socket, channelName) => {
 
 export const setAction = (action : string) => {
   ACTION = action;
+}
+
+export const toggleAudio = () => {
+  AUDIO = !AUDIO;
 }

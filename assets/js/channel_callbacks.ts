@@ -6,6 +6,7 @@
 
 import {
   CHANNEL,
+  MAIN_LAYER,
   STAGE
 } from "./state";
 import {
@@ -18,8 +19,9 @@ export const setup = () => {
   channelCallback(CHANNEL, CH.TREE_NEW, (tree) => {
     createTree(tree);
 
-    // find the tree that was created temporarily and destroy it
-    STAGE.find('#temp').forEach((t) => t.destroy());
+    STAGE.find('#temp').forEach((t) => {
+      t.destroy()
+    });
   });
   channelCallback(CHANNEL, CH.TREE_DESTROY, (tree) => {
     destroyTree(tree);

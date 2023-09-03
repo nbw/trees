@@ -7,7 +7,7 @@ import Konva from "../vendor/konva.min.js";
 
 // PIXEL_DENSITY specks per PIXEL_DENSITY_SIZE pixels 
 const PIXEL_SIZE = 5;
-const PIXEL_DENSITY = 30;
+const PIXEL_DENSITY = 20;
 const PIXEL_DENSITY_SIZE = 200;
 const COLORS = [
   "#1A7F71",

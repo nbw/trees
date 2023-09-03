@@ -44,15 +44,8 @@ window.addEventListener("phx:page-loading-start", _info => topbar.show(300))
 window.addEventListener("phx:page-loading-stop", _info => topbar.hide())
 
 setupStores(csrfToken, "room:lobby");
-// setupFromSocket(liveSocket, "room:lobby");
 channelJoin(CHANNEL);
 setupChannelCallbacks();
 go();
 
 liveSocket.connect();
-
-// expose liveSocket on window for web console debug logs and latency simulation:
-// >> liveSocket.enableDebug()
-// >> liveSocket.enableLatencySim(1000)  // enabled for duration of browser session
-// >> liveSocket.disableLatencySim()
-

@@ -1,27 +1,29 @@
 import Konva from "../vendor/konva.min.js";
 
-const TREE_LOOKUP = {
-  "alder": {
-    type: "alder",
+export const TREE_LOOKUP = {
+  "sakura": {
+    type: "sakura",
     image_urls: [
       '/images/trees/cherry.png',
       '/images/trees/cherry.png'
     ],
     images: {},
+    instrument: 0,
+    notes: ["C4", "D4", "Eb4", "F4", "G4", "Ab4", "Bb4"],
     width: 100,
     height: 150,
     offsetX: 25,
     offsetY: 70,
   },
-  "oak": {
-    type: "oak",
+  "seq": {
+    type: "seq",
     image_urls: [
       '/images/trees/seq.png',
       '/images/trees/seq.png',
-      // '/images/tree.svg',
-      // '/images/tree_1.png'
     ],
     images: {},
+    instrument: 1,
+    notes: ["G2", "Ab2", "Bb2", "C3", "D3", "Eb3", "F3"],
     width: 200,
     height: 500,
     offsetX: 50,
@@ -34,23 +36,27 @@ const TREE_LOOKUP = {
       '/images/trees/stump.png',
     ],
     images: {},
+    instrument: 2,
+    notes: ["C3", "D3", "Eb3", "F3", "G3", "Ab3", "Bb3"],
     width: 225,
     height: 200,
     offsetX: 65,
     offsetY: 85,
   },
-  "tree": {
-    type: "tree",
-    image_urls: [
-      '/images/trees/green_tree.png',
-      '/images/trees/green_tree.png',
-    ],
-    images: {},
-    width: 200,
-    height: 300,
-    offsetX: 50,
-    offsetY: 135,
-  }
+  // "tree": {
+  //   type: "tree",
+  //   image_urls: [
+  //     '/images/trees/green_tree.png',
+  //     '/images/trees/green_tree.png',
+  //   ],
+  //   images: {},
+  //   instrument: 0,
+  //   notes: ["C4","D4", "E4"],
+  //   width: 200,
+  //   height: 300,
+  //   offsetX: 50,
+  //   offsetY: 135,
+  // }
 }
 
 const countImages = () : number => {

@@ -15,7 +15,11 @@ import {
   SOUND
 } from "./constants.js";
 import { makeNoise } from "./noise.js";
-import {Tree, build_tree_lookup} from "./tree.js";
+import {
+  build_tree_lookup,
+  Tree,
+  TREE_LOOKUP
+} from "./tree.js";
 import {
   start as startForeground
 } from "./foreground.js"
@@ -124,7 +128,6 @@ export const createTree = (tree_data, skipDrawInOrder = false) => {
     } else {
       drawNodesInOrder(newTree(tree));
     }
-
   }
 }
 
@@ -140,6 +143,7 @@ export const destroyTree = (tree_data) => {
 export const newTree = (tree: Tree) => {
   const group = new Konva.Group({
       id: `${tree.id}`,
+      name: tree.type,
       x: tree.x,
       y: tree.y,
   });
@@ -154,7 +158,8 @@ export const newTree = (tree: Tree) => {
     images[0].hide();
     images[1].show();
     animateWaterRings(this);
-    makeNoise();
+    const t = TREE_LOOKUP[tree.type];
+    makeNoise(t.instrument, t.notes, SOUND.BG_VOLUME);
   });
   group.on('mouseout', function () {
     images[0].show();
@@ -200,21 +205,29 @@ const treesOnScreen = () => {
 }
 
 const collidingNodes = (refNode) => {
+  const stageAbsolute = STAGE.absolutePosition()
+
   return MAIN_LAYER.getChildren(function (node) {
-    return refNode.id() !== "temp"
-           && (refNode.id() != node.id())
-           && haveIntersection(refNode.getClientRect(), node.getClientRect());
+    // For whatever reason, refNode uses absolute coords
+    // but node needs to be offset correctly.
+    const refNodeRect = refNode.getClientRect()
+    const nodeRect = node.getClientRect()
+    nodeRect.y = stageAbsolute.y + node.y
+    nodeRect.x = stageAbsolute.x + node.x
+
+    return (refNode.id() != node.id())
+           && haveIntersection(refNodeRect, nodeRect);
   });
 }
 
 const haveIntersection = (r1, r2) => {
-    return !(
-      r2.x > r1.x + r1.width ||
-      r2.x + r2.width < r1.x ||
-      r2.y > r1.y + r1.height ||
-      r2.y + r2.height < r1.y
-    );
-  }
+  return !(
+    r2.x > r1.x + r1.width ||
+    r2.x + r2.width < r1.x ||
+    r2.y > r1.y + r1.height ||
+    r2.y + r2.height < r1.y
+  );
+}
 
 const animateTree = (node) => {
   if (node) {
@@ -222,7 +235,8 @@ const animateTree = (node) => {
       images[0].hide();
       images[1].show();
       animateWaterRings(node)
-      makeNoise(SOUND.BG_VOLUME);
+      const tree = TREE_LOOKUP[node.name()];
+      makeNoise(tree.instrument, tree.notes, SOUND.BG_VOLUME);
     setTimeout(() => {
       images[0].show();
       images[1].hide();
@@ -268,12 +282,12 @@ const drawGrowingCircle = (x, y, baseOpacity, layer) => {
 
 const drawNodesInOrder = (newNode) => {
   const nodes = collidingNodes(newNode);
-  const clones = nodes.map((n) => {
-    if (n !== undefined && n.id() !== "temp") {
-      return newTree(TREES[n.id()]);
-    }
-  }).filter((n) => n !== undefined);
+  console.log("colliding", nodes.length)
+  const clones = nodes.filter((n) => n !== undefined && n.id() !== "temp")
+                      .map((n) => { return newTree(TREES[n.id()]); });
+
   nodes.forEach((n) => n.destroy());
+
   clones.push(newNode);
   clones.sort((a, b) => a.y() - b.y())
   clones.forEach((n) => MAIN_LAYER.add(n));

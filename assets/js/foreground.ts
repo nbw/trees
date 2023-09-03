@@ -9,7 +9,7 @@ import {
 import Konva from "../vendor/konva.min.js";
 
 const LEAF_SIZE = 3;
-const LEAF_COUNT = 10;
+const LEAF_COUNT = 20;
 
 const createLeaf = (x : number, y : number) => {
   const size = LEAF_SIZE;

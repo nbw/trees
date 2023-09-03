@@ -1,5 +1,6 @@
 export enum DOM {
   CANVAS_ID = "canvas",
+  MODAL_SOUND_BUTTON_ID = "modal-sound",
   SOUND_BUTTON_ID = "sound",
   MENU_ITEMS = "#menu .item",
 }

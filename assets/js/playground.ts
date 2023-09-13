@@ -72,7 +72,7 @@ export const go = async () => {
       drawNodesInOrder(t)
 
       if (CHANNEL) {
-        CHANNEL?.push(CH.TREE_NEW, {x: x, y: y, type: ACTION});
+        CHANNEL?.push(CH.TREE_NEW, {x: Math.round(x), y: Math.round(y), type: ACTION});
       }
     }
   });
@@ -282,7 +282,6 @@ const drawGrowingCircle = (x, y, baseOpacity, layer) => {
 
 const drawNodesInOrder = (newNode) => {
   const nodes = collidingNodes(newNode);
-  console.log("colliding", nodes.length)
   const clones = nodes.filter((n) => n !== undefined && n.id() !== "temp")
                       .map((n) => { return newTree(TREES[n.id()]); });
 

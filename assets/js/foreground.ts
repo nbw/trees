@@ -61,9 +61,9 @@ const animateLeaves = ( ) => {
           -1*stageAbsolute.x + Math.floor(Math.random()*canvasWidth()),
           -1*stageAbsolute.y + Math.floor(Math.random()*canvasHeight())
         )
-      }, Math.floor(Math.random()*5000));
+      }, Math.floor(250 + Math.random()*5000));
     }
-  }, Math.floor(Math.random()*4000))
+  }, Math.floor(1500 + Math.random()*3000))
 }
 
 

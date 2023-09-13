@@ -52,7 +52,7 @@ let INSTRUMENTS = [
   () => {
     const synth = new Tone.PolySynth({
       voice: Tone.Synth, 
-      volume: -3,
+      volume: 0,
       maxPolyphony: 64,
       options: {
         envelope: {
@@ -62,7 +62,8 @@ let INSTRUMENTS = [
           release: 3.5
         },
         oscillator: {
-          type: "amtriangle",
+          type: "amsine",
+          // type: "amtriangle",
         }
       },
     })

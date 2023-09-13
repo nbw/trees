@@ -69,7 +69,7 @@ let INSTRUMENTS = [
     })
 
     const reverb = new Tone.Reverb({decay: 1.5, wet: 0.75});
-    const delay = new Tone.PingPongDelay("3n", 0.15);
+    const delay = new Tone.PingPongDelay("3n", 0.25);
     const delayReverb = new Tone.Reverb({decay: 1.5, wet: 0.95});
     const delayGain = new Tone.Gain(0.3);
 

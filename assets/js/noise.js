@@ -52,7 +52,7 @@ let INSTRUMENTS = [
   () => {
     const synth = new Tone.PolySynth({
       voice: Tone.Synth, 
-      volume: 0,
+      volume: -2,
       maxPolyphony: 64,
       options: {
         envelope: {
@@ -68,9 +68,9 @@ let INSTRUMENTS = [
       },
     })
 
-    const reverb = new Tone.Reverb({decay: 1.5, wet: 0.75});
+    const reverb = new Tone.Reverb({decay: 1.5, wet: 0.35});
     const delay = new Tone.PingPongDelay("3n", 0.25);
-    const delayReverb = new Tone.Reverb({decay: 1.5, wet: 0.95});
+    const delayReverb = new Tone.Reverb({decay: 1.5, wet: 0.55});
     const delayGain = new Tone.Gain(0.3);
 
     // Clean Channel

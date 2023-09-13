@@ -23,7 +23,7 @@ export const TREE_LOOKUP = {
     ],
     images: {},
     instrument: 1,
-    notes: ["G2", "Ab3", "Bb3","C3", "D3", "Eb3", "F3", "G3"],
+    notes: ["C3", "D3", "Eb3", "F3", "G3", "Ab3", "Bb3"],
     width: 200,
     height: 510,
     offsetX: 50,

@@ -68,10 +68,10 @@ let INSTRUMENTS = [
       },
     })
 
-    const reverb = new Tone.Reverb({decay: 1.5, wet: 0.35});
+    const reverb = new Tone.Reverb({decay: 1.5, wet: 0.65});
     const delay = new Tone.PingPongDelay("3n", 0.25);
-    const delayReverb = new Tone.Reverb({decay: 1.5, wet: 0.55});
-    const delayGain = new Tone.Gain(0.3);
+    const delayReverb = new Tone.Reverb({decay: 1.5, wet: 0.95});
+    const delayGain = new Tone.Gain(0.25);
 
     // Clean Channel
     synth.connect(reverb);
